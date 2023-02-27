@@ -1,18 +1,23 @@
 module.exports = function check(str, bracketsConfig) {
-  let s=str.replace('\'', '');
-  const hashMap = { "(": ")", "{": "}", "[": "]" };
-  const stack = [];
-  for (let ch of s) {
-    if (hashMap[ch]) {
-      // ch is an opening bracket
-      stack.push(hashMap[ch]);
-    } else if (stack.length > 0 && stack[stack.length - 1] === ch) {
-      // ch is a closing bracket and top of stack matches
-      stack.pop();
-    } else {
-      // ch is a closing bracket and top of the stack doesn't match
-      return false;
-    }
+  let closing = [];
+  for (let i = 0; i < str.length; i++){
+      let index;
+      for (let j = 0; j < bracketsConfig.length; j ++) {
+          if (bracketsConfig[j][0] == str.charAt(i)){
+              index = j;
+              break;
+          }
+      }
+      switch (true) {
+          case str.charAt(i) == closing[closing.length-1]:
+              closing.pop()
+              break;
+          case index !== undefined:
+              closing.push(bracketsConfig[index][1]);
+              break;
+          default:
+              return false;
+      }
   }
-  return stack.length === 0;
+  return closing.length == 0;
 }
